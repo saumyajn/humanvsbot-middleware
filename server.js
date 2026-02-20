@@ -157,4 +157,4 @@ app.post('/api/guess', (req, res) => {
         actualIdentity: actualIdentity
     });
 });
-httpServer.listen(3000, () => console.log('Gateway running on port 3000'));
+httpServer.listen(process.env.PYTHON_SERVICE_URL, () => console.log('Gateway running on port 3000'));
