@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Turing Test - Lab Rat</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f4f4f4; }
+        #log { background: #fff; border: 1px solid #ccc; height: 200px; overflow-y: scroll; padding: 10px; margin-bottom: 10px; }
+        .status { font-weight: bold; color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Turing Gateway Tester</h1>
+    <div id="log"></div>
+    <button id="findMatch">Find Match</button>
+
+    <script src="http://localhost:3000/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        const logDiv = document.getElementById('log');
+        const btn = document.getElementById('findMatch');
+
+        function addLog(msg, isStatus = false) {
+            const p = document.createElement('p');
+            if (isStatus) p.className = 'status';
+            p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logDiv.appendChild(p);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        btn.onclick = () => {
+            addLog("Searching for opponent...");
+            socket.emit('find_match');
+            btn.disabled = true;
+        };
+
+        socket.on('connect', () => addLog("Connected to Gateway", true));
+        
+        socket.on('match_found', (data) => {
+            addLog(`MATCH FOUND! Room: ${data.roomId}`, true);
+            addLog(`Opponent Type: ${data.opponent.toUpperCase()}`);
+        });
+
+        socket.on('disconnect', () => addLog("Disconnected", true));
+    </script>
+</body>
+</html>
