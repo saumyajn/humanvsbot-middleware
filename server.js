@@ -3,10 +3,20 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
-
+const allowedOrigins = [
+    "https://humanvsbot-frontend.vercel.app", // Your Web App
+    "http://localhost",                       // Android App default
+    "capacitor://localhost"                   // iOS App default
+];
 const app = express();
 app.use(cors({
-    origin: 'https://humanvsbot-frontend.vercel.app', // Your Frontend URL
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST']
 }));
 app.use(express.json());
@@ -18,7 +28,13 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
    cors: {
-        origin: "https://humanvsbot-frontend.vercel.app", // Your Frontend URL
+        origin: (origin, callback) => {
+            if (!origin || allowedOrigins.includes(origin)) {
+                callback(null, true);
+            } else {
+                callback(new Error('Not allowed by CORS'));
+            }
+        },
         methods: ["GET", "POST"]
     }
 });
