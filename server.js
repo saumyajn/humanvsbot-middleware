@@ -3,41 +3,27 @@ const { createServer } = require('http');
 const { Server } = require('socket.io');
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
-const allowedOrigins = [
-    "https://humanvsbot-frontend.vercel.app", // Your Web App
-    "http://localhost",                       // Android App default
-    "capacitor://localhost"                   // iOS App default
-];
+
 const app = express();
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: "*",
+
     methods: ['GET', 'POST']
 }));
 app.use(express.json());
-const PORT = process.env.PORT || 3000; 
+const PORT = process.env.PORT || 3000;
 
 // 2. Get your Python URL from a DIFFERENT environment variable
 const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-   cors: {
-        origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                callback(new Error('Not allowed by CORS'));
-            }
-        },
+    cors: {
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
+
 
 let waitingQueue = [];
 // NEW: Keep track of which rooms are AI vs Human
@@ -146,7 +132,7 @@ io.on('connection', (socket) => {
 });
 
 app.post('/api/guess', (req, res) => {
-    const { roomId, guess } = req.body; 
+    const { roomId, guess } = req.body;
     const roomInfo = activeRooms.get(roomId);
 
     if (!roomInfo) {
@@ -183,6 +169,6 @@ app.post('/api/guess', (req, res) => {
     });
 });
 httpServer.listen(PORT, '0.0.0.0', () => {
-  console.log(`Middleware listening on port ${PORT}`);
-  console.log(`Connecting to AI at: ${PYTHON_SERVICE_URL}`);
+    console.log(`Middleware listening on port ${PORT}`);
+    console.log(`Connecting to AI at: ${PYTHON_SERVICE_URL}`);
 });
