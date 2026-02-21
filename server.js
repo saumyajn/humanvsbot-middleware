@@ -88,7 +88,7 @@ io.on('connection', (socket) => {
         if (roomInfo.type === 'ai') {
             try {
                 // Call your Python FastAPI backend
-                const response = await fetch('http://127.0.0.1:8000/api/bot/respond', {
+                const response = await fetch(`${PYTHON_SERVICE_URL}/api/bot/respond`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text: text, session_id: roomId })
