@@ -5,7 +5,10 @@ const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 
 const app = express();
-app.use(cors({ origin: '*' }));
+app.use(cors({
+    origin: 'https://humanvsbot-frontend.vercel.app', // Your Frontend URL
+    methods: ['GET', 'POST']
+}));
 app.use(express.json());
 const PORT = process.env.PORT || 3000; 
 
@@ -14,7 +17,10 @@ const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
-    cors: { origin: "*" }
+   cors: {
+        origin: "https://humanvsbot-frontend.vercel.app", // Your Frontend URL
+        methods: ["GET", "POST"]
+    }
 });
 
 let waitingQueue = [];
