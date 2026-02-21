@@ -7,7 +7,10 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: '*' }));
 app.use(express.json());
+const PORT = process.env.PORT || 3000; 
 
+// 2. Get your Python URL from a DIFFERENT environment variable
+const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
@@ -157,4 +160,7 @@ app.post('/api/guess', (req, res) => {
         actualIdentity: actualIdentity
     });
 });
-httpServer.listen(process.env.PYTHON_SERVICE_URL, () => console.log('Gateway running on port 3000'));
+httpServer.listen(PORT, '0.0.0.0', () => {
+  console.log(`Middleware listening on port ${PORT}`);
+  console.log(`Connecting to AI at: ${PYTHON_SERVICE_URL}`);
+});
