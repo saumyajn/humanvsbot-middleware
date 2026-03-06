@@ -14,7 +14,8 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 // 2. Get your Python URL from a DIFFERENT environment variable
-const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL;
+const DEFAULT_PYTHON_URL = "http://localhost:8000"; // Fallback for local testing
+const PYTHON_SERVICE_URL =  DEFAULT_PYTHON_URL;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
@@ -168,7 +169,10 @@ app.post('/api/guess', (req, res) => {
         actualIdentity: actualIdentity
     });
 });
-httpServer.listen(PORT, '0.0.0.0', () => {
-    console.log(`Middleware listening on port ${PORT}`);
+const HOST = '0.0.0.0' 
+// const HOST = 'localhost' // For local testing, change to '
+
+httpServer.listen(PORT, HOST, () => {
+    console.log(`Middleware listening on http://${HOST}:${PORT}`);
     console.log(`Connecting to AI at: ${PYTHON_SERVICE_URL}`);
 });
