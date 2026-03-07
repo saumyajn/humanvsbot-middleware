@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 
 // 2. Get your Python URL from a DIFFERENT environment variable
 const DEFAULT_PYTHON_URL = "http://localhost:8000"; // Fallback for local testing
-const PYTHON_SERVICE_URL =  DEFAULT_PYTHON_URL;
+const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || DEFAULT_PYTHON_URL;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
