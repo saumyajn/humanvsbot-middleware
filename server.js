@@ -83,14 +83,12 @@ io.on('connection', (socket) => {
         const roomInfo = activeRooms.get(roomId);
 
         if (!roomInfo) return;
-
-        // 1. Send the user's message to the room (so the frontend sees it)
         socket.to(roomId).emit('receive_message', { text: text, sender: 'them' });
 
-        // 2. If it's an AI room, ask Python for a response
+        // If it's an AI room, ask Python for a response
         if (roomInfo.type === 'ai') {
             try {
-                // Call your Python FastAPI backend
+                // Call Python FastAPI backend
                 const response = await fetch(`${PYTHON_SERVICE_URL}/api/bot/respond`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
